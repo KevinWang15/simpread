@@ -24,23 +24,7 @@ export default class Pluginbar extends React.Component {
         this.setState({ category: Object.keys( this.category ) });
     }
 
-    enable( id ) {
-        console.log( id, storage.plugins[id].enable )
-        const plugin  = storage.plugins[id];
-        plugin.enable = !plugin.enable;
-        storage.Plugins( () => {
-            new Notify().Render( "当前插件已" + ( plugin.enable ? "启用" : "禁用" ) + "，请重新进入阅读模式以便生效。" );
-            // hack code
-            const bgColor = ( plugin.enable == undefined || plugin.enable == true ) ? plugin.icon.bgColor : "#c3c6c7";
-            $( this.refs[id].refs.mask ).parent().css( "background-color", bgColor );
-        }, storage.plugins );
-    }
-
     componentWillMount() {
-        storage.Plugins( () => {
-            this.category = {};
-            this.getCategory();
-        });
     }
 
     render() {

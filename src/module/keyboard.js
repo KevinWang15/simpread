@@ -104,7 +104,7 @@ function listen( callback ) {
 }
 
 function bind( combo, callback ) {
-    Mousetrap.bind( combo, callback );
+    // Mousetrap.bind( combo, callback );
 }
 
 /***********************

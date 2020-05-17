@@ -63,7 +63,8 @@ class Browser {
 const br      = new Browser( userAgent() ),
       adapter = br.adapter;
 
+const browser = window.browser;
 export {
     br,
-    adapter as browser
+    browser
 };

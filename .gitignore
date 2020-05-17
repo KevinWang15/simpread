@@ -18,3 +18,8 @@ ext/_locales/**
 
 # for mac
 **/.DS_Store
+
+.idea/
+
+package-lock.json
+api.js

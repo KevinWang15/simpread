@@ -41,17 +41,7 @@ const Footer = () => {
         <sr-rd-footer>
             <sr-rd-footer-group>
                 <sr-rd-footer-line></sr-rd-footer-line>
-                <sr-rd-footer-text>全文完</sr-rd-footer-text>
-                <sr-rd-footer-line></sr-rd-footer-line>
             </sr-rd-footer-group>
-            <sr-rd-footer-copywrite>
-                <div>本文由 <a href="http://ksria.com/simpread" target="_blank">简悦 SimpRead</a> 优化，用以提升阅读体验</div>
-                <div className="second">使用了 <abbr>全新的简悦词法分析引擎<sup>beta</sup></abbr>，<a target="_blank" href="http://ksria.com/simpread/docs/#/词法分析引擎">点击查看</a>详细说明</div>
-                <div className="third">
-                    <a className="sr-icon good sr-top" aria-label="觉得不错？请帮忙投票 😄" data-balloon-pos="up" target="_blank" onClick={ ()=>onClick( true ) } dangerouslySetInnerHTML={{__html: good_icon }} ></a>
-                    <a className="sr-icon bad sr-top"  aria-label="有待改进，请帮忙吐槽 😄" data-balloon-pos="up" target="_blank" onClick={ ()=>onClick() } dangerouslySetInnerHTML={{__html: bad_icon  }} ></a>
-                </div>
-            </sr-rd-footer-copywrite>
         </sr-rd-footer>
     )
 }
@@ -59,45 +49,6 @@ const Footer = () => {
 class Read extends React.Component {
 
     verifyContent() {
-        if ( $("sr-rd-content").text().length < 100 ) {
-            if ( load_count == 0 ) {
-                new Notify().Render({ content: "检测到正文获取异常，是否重新获取？", action: "是的", cancel: "取消", callback: type => {
-                    if ( type == "cancel" ) return;
-                    load_count++;
-                    this.componentWillUnmount();
-                    storage.pr.Readability();
-                    Render();
-                }});
-            } else if ( load_count == 1 ) {
-                this.componentWillUnmount();
-                new Notify().Render({ content: '获取正文失败，是否使用 <a target="_blank" href="http://ksria.com/simpread/docs/#/手动框选">手动框选</a> 高亮的方式获取？', action: "是的", cancel: "取消", callback: type => {
-                    if ( type == "cancel" ) return;
-                    setTimeout( () => {
-                        Highlight().done( dom => {
-                            const rerender = element => {
-                                load_count++;
-                                storage.pr.TempMode( "read", element );
-                                Render();
-                            };
-                            storage.current.highlight ? 
-                                highlight.Control( dom ).done( newDom => {
-                                    rerender( newDom );
-                                }) : rerender( dom );
-                        });
-                    }, 200 );
-                }});
-            } else if ( load_count >= 2 ) {
-                this.componentWillUnmount();
-                new Notify().Render({ content: "高亮无法仍无法适配此页面，是否提交？", action: "是的", cancel: "取消", callback: type => {
-                    if ( type == "cancel" ) return;
-                    browser.runtime.sendMessage( msg.Add( msg.MESSAGE_ACTION.save_site, { url: location.href, site: {}, uid: storage.user.uid, type: "failed" }));
-                }});
-                load_count = 0;
-            }
-            return false;
-        } else {
-            return true;
-        }
     }
 
     componentWillMount() {
@@ -140,21 +91,12 @@ class Read extends React.Component {
         kbd.Render( $( "sr-rd-content" ));
         tooltip.Render( rdclsjq );
         waves.Render({ root: rdclsjq });
-        storage.Statistics( "read" );
-        browser.runtime.sendMessage( msg.Add( msg.MESSAGE_ACTION.track, { eventCategory: "mode", eventAction: "readmode", eventValue: "readmode" }) );
-
-        !this.props.wrapper.avatar && this.props.read.toc 
+        !this.props.wrapper.avatar && this.props.read.toc
             && toc.Render( "sr-read", $( "sr-rd-content" ), this.props.read.theme, this.props.read.toc_hide );
 
         this.props.wrapper.avatar && $( ".simpread-read-root" ).addClass( "simpread-multi-root" );
 
         loadPlugins( "read_complete" );
-
-        setTimeout( ()=>{
-            this.verifyContent();
-            tips.Render( storage.option.plugins );
-            tips.Help( storage.statistics );
-        }, 50 );
     }
 
     componentWillUnmount() {
@@ -253,17 +195,17 @@ class Read extends React.Component {
                         <spec.Paging paging={ this.props.wrapper.paging } />;
         return (
             <sr-read>
-                <ProgressBar show={ this.props.read.progress } />
-                <sr-rd-title>{ this.props.wrapper.title }</sr-rd-title>
-                <sr-rd-desc>{ this.props.wrapper.desc }</sr-rd-desc>
-                { Article }
-                { Page    }
-                <Footer />
-                <ReadCtlbar show={ this.props.read.controlbar } 
-                            multi={ this.props.wrapper.avatar ? true : false }
-                            type={ this.props.wrapper.name }
-                            site={{ title: this.props.wrapper.title, url: window.location.href }} 
-                            custom={ this.props.read.custom } onAction={ (t,v,c)=>this.onAction( t,v,c ) }/>
+                <ProgressBar show={true}/>
+                <sr-rd-title>{this.props.wrapper.title}</sr-rd-title>
+                <sr-rd-desc>{this.props.wrapper.desc}</sr-rd-desc>
+                {Article}
+                {Page}
+                <Footer/>
+                <ReadCtlbar show={this.props.read.controlbar}
+                            multi={this.props.wrapper.avatar ? true : false}
+                            type={this.props.wrapper.name}
+                            site={{title: this.props.wrapper.title, url: window.location.href}}
+                            custom={this.props.read.custom} onAction={(t, v, c) => this.onAction(t, v, c)}/>
             </sr-read>
         )
     }
@@ -384,11 +326,11 @@ function excludes( $target, exclude ) {
  * @param {string} state include: plugin.run_at
  */
 function loadPlugins( state ) {
-    storage.Plugins( () => {
-        storage.option.plugins.forEach( id => {
-            storage.plugins[id] && run.Exec( state, storage.current.site.name, storage.plugins[id] );
-        });
-    });
+    // storage.Plugins( () => {
+    //     storage.option.plugins.forEach( id => {
+    //         storage.plugins[id] && run.Exec( state, storage.current.site.name, storage.plugins[id] );
+    //     });
+    // });
 }
 
 export { Render, Exist, Exit, Highlight };

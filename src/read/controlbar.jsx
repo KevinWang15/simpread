@@ -45,13 +45,6 @@ export default class ReadCtlbar extends React.Component {
     }
 
     componentDidMount() {
-        browser.runtime.onMessage.addListener( ( request, sender, sendResponse ) => {
-            if ( request.type == msg.MESSAGE_ACTION.export ) {
-                console.log( "controlbar runtime Listener", request );
-                new Notify().Render( "已重新授权成功！" );
-                br.isFirefox() ? new Notify().Render( "请刷新本页才能生效。" ) : this.onAction( undefined, request.value.type );
-            }
-        });
         kbd.Listen( combo => {
             this.onAction( undefined, combo )
         });
@@ -204,14 +197,14 @@ export default class ReadCtlbar extends React.Component {
 
     render() {
         const Controlbar = storage.current.fap ? 
-            <Fap items={ [ "样式", "动作", "站点", "插件" ] } autoHide={ false }
-                waves="md-waves-effect md-waves-circle md-waves-float" 
-                onOpen={ ()=> this.onPop( "open" ) } onClose={ ()=> this.onPop( "close" ) }
-                onAction={ (event, type)=>this.onAction(event, type ) }>
-                <ReadOpt option={ storage.current } onChange={ (t,c)=>this.onChange(t,c)}/>
-                <Actionbar items={ readItems } onAction={ (type)=>this.onAction(undefined, type ) }/>
-                <Sitebar />
-                <Pluginbar />
+            <Fap items={["样式"]} autoHide={false}
+                 waves="md-waves-effect md-waves-circle md-waves-float"
+                 onOpen={() => this.onPop("open")} onClose={() => this.onPop("close")}
+                 onAction={(event, type) => this.onAction(event, type)}>
+                <ReadOpt option={storage.current} onChange={(t, c) => this.onChange(t, c)}/>
+                <Actionbar items={readItems} onAction={(type) => this.onAction(undefined, type)}/>
+                <Sitebar/>
+                <Pluginbar/>
             </Fap>
             :
             <Fab items={ readItems } tooltip={ tooltip_options } waves="md-waves-effect md-waves-circle md-waves-float" onAction={ (event, type)=>this.onAction(event, type ) } />

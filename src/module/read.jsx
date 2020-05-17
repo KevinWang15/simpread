@@ -84,9 +84,6 @@ export default class ReadOpt extends React.Component {
                     <ThemeSel themes={ th.colors } names={ th.names } labels={ conf.readLabels } theme={ this.props.option.theme } changeBgColor={ val=>this.changeBgColor(val) } />
                 </sr-opt-gp>
                 <sr-opt-gp>
-                    <Shortcuts shortcuts={ this.props.option.shortcuts } changeShortcuts={ val=>this.changeShortcuts(val) } />
-                </sr-opt-gp>
-                <sr-opt-gp>
                     <sr-opt-label>字体类型</sr-opt-label>
                     <AC value={ this.props.option.fontfamily }
                         placeholder="请输入 font-family 值"

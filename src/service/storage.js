@@ -1,7 +1,5 @@
 console.log( "=== simpread storage load ===" )
 
-import "babel-polyfill";
-
 import {browser, br}  from 'browser';
 import {version,patch}from 'version';
 
@@ -15,8 +13,8 @@ const name = "simpread",
     remote = "http://sr.ksria.cn/website_list_v4.json",
     origins= "http://sr.ksria.cn/website_list_origins.json",
     versions= "http://sr.ksria.cn/versions.json",
-    local  = browser.extension.getURL( "website_list.json" ),
-    help   = browser.extension.getURL( "help_tips.json" ),
+    local  = require( "../website_list.json" ),
+    help   = require( "../help_tips.json" ),
     mode   = {
         focus     : "focus",
         read      : "read",
